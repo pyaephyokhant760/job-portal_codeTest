@@ -19,6 +19,8 @@ class InterviewController extends Controller implements HasMiddleware
         ];
     }
 
+    /*********************************************************************** */
+
     /**
      * Display a listing of the resource.
      */
@@ -30,6 +32,8 @@ class InterviewController extends Controller implements HasMiddleware
             ->then(fn($query) => response()->json($query->with(['application', 'recruiter'])->get()));
     }
 
+    /*********************************************************************** */
+
     /**
      * Store a newly created resource in storage.
      */
@@ -40,9 +44,13 @@ class InterviewController extends Controller implements HasMiddleware
             ->through([
                 \App\Pipelines\Interview\ValidateInterviewRequest::class,
                 \App\Pipelines\Interview\SaveInterview::class,
+                \App\Pipelines\Interview\SendInterviewNotification::class,
             ])
+            
             ->then(fn($interview) => response()->json($interview, 201));
     }
+
+    /*********************************************************************** */
 
     /**
      * Display the specified resource.
@@ -51,6 +59,7 @@ class InterviewController extends Controller implements HasMiddleware
     {
         //
     }
+    /*********************************************************************** */
 
     /**
      * Update the specified resource in storage.
@@ -64,6 +73,8 @@ class InterviewController extends Controller implements HasMiddleware
             ->then(fn($interview) => response()->json($interview));
     }
 
+    /*********************************************************************** */
+    
     /**
      * Remove the specified resource from storage.
      */

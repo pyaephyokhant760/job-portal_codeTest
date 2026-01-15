@@ -6,13 +6,13 @@ use Closure;
 
 class FilterByCategory
 {
-    public function handle($query, Closure $next)
+    public function handle($payload, Closure $next)
     {
-        // category_id ပါလာမှသာ တိကျသော ID ဖြင့် စစ်မည်
-        $query->when(request('category_id'), function ($q, $categoryId) {
-            $q->where('category_id', $categoryId);
+       
+        $payload['query']->when(request('category_id'), function ($query, $categoryId) {
+            return $query->where('category_id', $categoryId);
         });
 
-        return $next($query);
+        return $next($payload);
     }
 }

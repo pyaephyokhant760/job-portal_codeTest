@@ -11,9 +11,8 @@ class ValidateInterviewRequest
     {
         $request->validate([
             'application_id' => 'required|exists:applications,id',
-            'date_time'      => 'required|date|after:now', // အတိတ်ကအချိန် မဖြစ်ရ
+            'date_time'      => 'required|date|after:now', 
             'type'           => 'required|in:online,offline',
-            // Type က online ဖြစ်ခဲ့ရင် link က မဖြစ်မနေ ပါရမယ် (Required)
             'link'           => 'required_if:type,online|nullable|url',
             'outcome'        => 'nullable|in:pending,pass,fail',
         ]);

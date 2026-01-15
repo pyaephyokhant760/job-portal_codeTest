@@ -12,14 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('interviews', function (Blueprint $table) {
-            $table->id(); // id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY
-            $table->foreignId('application_id')->constrained('applications')->onDelete('cascade'); // application_id FK
-            $table->foreignId('recruiter_id')->constrained('users')->onDelete('cascade'); // recruiter_id FK
-            $table->dateTime('date_time'); // DATETIME NOT NULL
-            $table->enum('type', ['online', 'offline'])->default('offline'); // ENUM with default
-            $table->enum('outcome', ['pending','pass','fail'])->default('pending'); // ENUM with default
-            $table->string('link')->nullable(); // VARCHAR(255) nullable
-            $table->timestamps(); // created_at & updated_at
+            $table->id();
+            $table->foreignId('application_id')->constrained('applications')->onDelete('cascade');
+            $table->foreignId('recruiter_id')->constrained('users')->onDelete('cascade');
+            $table->string('candidate_email'); // ဒီတစ်ကြောင်း ထည့်ပေးပါ
+            $table->dateTime('date_time');
+            $table->enum('type', ['online', 'offline'])->default('offline');
+            $table->enum('outcome', ['pending', 'pass', 'fail'])->default('pending');
+            $table->string('link')->nullable();
+            $table->timestamps();
         });
     }
 
