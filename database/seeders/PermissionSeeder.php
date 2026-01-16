@@ -45,13 +45,14 @@ class PermissionSeeder extends Seeder
         $admin->givePermissionTo(Permission::all());
 
         $employer = Role::findOrCreate('employer');
-        $employer->givePermissionTo([]);
+        $employer->givePermissionTo(['work-list','category-list']);
 
         $recruiter = Role::findOrCreate('recruiter');
-        $recruiter->givePermissionTo(['work-store', 'work-update']);
+        $recruiter->givePermissionTo(['work-store', 'work-update','category-list','application-list','application-store','application-update',
+        'interview-list','interview-create','interview-update']);
 
         $jobSeeker = Role::findOrCreate('job_seeker');
-        $jobSeeker->givePermissionTo([]);
+        $jobSeeker->givePermissionTo(['work-list','category-list']);
 
 
         $this->createUser('Admin User', 'admin@test.com', 'admin');

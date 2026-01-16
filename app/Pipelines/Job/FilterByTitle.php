@@ -11,13 +11,13 @@ class FilterByTitle
      * @param \Closure $next
      * @return mixed
      */
-    public function handle($query, Closure $next)
+    public function handle($payload, Closure $next)
     {
-        // when() သည် ပထမ parameter 'true' ဖြစ်မှသာ ဒုတိယ parameter (callback) ကို အလုပ်လုပ်စေပါသည်
-        $query->when(request('title'), function ($q, $title) {
-            $q->where('title', 'like', "%{$title}%");
+        
+        $payload['query']->when(request('title'), function ($query, $title) {
+            $query->where('title', 'like', "%{$title}%");
         });
 
-        return $next($query);
+        return $next($payload);
     }
 }

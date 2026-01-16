@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Commands\CategoryCommand\CategoryCommand;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Pipeline\Pipeline;
@@ -20,6 +21,9 @@ class CategoryController extends Controller implements HasMiddleware
             new Middleware('permission:category-delete', only: ['destroy']),
         ];
     }
+
+    /*********************************************************************** */
+
     /**
      * Display a listing of the resource.
      */
@@ -28,18 +32,27 @@ class CategoryController extends Controller implements HasMiddleware
         return response()->json(Category::latest()->get());
     }
 
+    /*********************************************************************** */
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        $request->validate(['name' => 'required|unique:categories,name']);
-
+        
+        $command = new CategoryCommand(
+            $request->name,
+        );
         return app(Pipeline::class)
-            ->send($request)
-            ->through([\App\Pipelines\Category\StoreCategory::class])
+            ->send($command)
+            ->through([
+                \App\Pipelines\Category\StoreCategory::class,
+                \App\Pipelines\Category\ValidateCategory::class,
+            ])
             ->then(fn($category) => response()->json($category, 201));
     }
+
+    /*********************************************************************** */
 
     /**
      * Display the specified resource.
@@ -49,18 +62,24 @@ class CategoryController extends Controller implements HasMiddleware
         //
     }
 
+    /*********************************************************************** */
+
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Category $category)
     {
-        $request->validate(['name' => 'required|unique:categories,name,' . $category->id]);
-
+        
         return app(Pipeline::class)
             ->send(['request' => $request, 'category' => $category])
-            ->through([\App\Pipelines\Category\UpdateCategory::class])
+            ->through([
+                \App\Pipelines\Category\UpdateCategoryValidation::class,
+                \App\Pipelines\Category\UpdateCategory::class,
+            ])
             ->then(fn($data) => response()->json(['message' => 'Updated!', 'data' => $data]));
     }
+
+    /*********************************************************************** */
 
     /**
      * Remove the specified resource from storage.

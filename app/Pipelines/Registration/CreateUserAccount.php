@@ -13,8 +13,6 @@ class CreateUserAccount {
             'email' => $command->email,
             'password' => Hash::make($command->password),
         ]);
-        
-        
         return $next((object) ['user' => $user, 'role' => $command->role]);
     }
 }

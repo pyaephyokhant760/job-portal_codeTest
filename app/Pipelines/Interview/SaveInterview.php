@@ -10,7 +10,8 @@ class SaveInterview
     {
         $interview = Interview::create([
             'application_id' => $request->application_id,
-            'recruiter_id'   => auth()->id(), // လက်ရှိ login ဝင်ထားသူကို recruiter အဖြစ်သတ်မှတ်
+            'recruiter_id'   => auth()->id(), 
+            'candidate_email' => $request->candidate_email,
             'date_time'      => $request->date_time,
             'type'           => $request->type ?? 'offline',
             'link'           => $request->link,

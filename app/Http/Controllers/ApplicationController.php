@@ -40,7 +40,7 @@ class ApplicationController extends Controller implements HasMiddleware
                 ], 200);
             });
     }
-
+    /*********************************************************************** */
     /**
      * Store a newly created resource in storage.
      */
@@ -59,6 +59,7 @@ class ApplicationController extends Controller implements HasMiddleware
             ])
             ->then(fn($application) => response()->json($application, 201));
     }
+    /*********************************************************************** */
 
     /**
      * Display the specified resource.
@@ -67,6 +68,8 @@ class ApplicationController extends Controller implements HasMiddleware
     {
         //
     }
+
+    /*********************************************************************** */
 
     /**
      * Update the specified resource in storage.
@@ -82,6 +85,8 @@ class ApplicationController extends Controller implements HasMiddleware
         ])
         ->then(fn($data) => response()->json(['message' => 'Application status updated!']));
     }
+
+    /*********************************************************************** */
 
     /**
      * Remove the specified resource from storage.

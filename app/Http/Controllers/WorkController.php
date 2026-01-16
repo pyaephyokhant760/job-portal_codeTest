@@ -6,8 +6,10 @@ use App\Models\Work;
 use Illuminate\Http\Request;
 use Illuminate\Pipeline\Pipeline;
 // ဒီနှစ်ကြောင်းကို မဖြစ်မနေ ထည့်ပေးရပါမယ်
-use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use App\Commands\WorkCommand\WorkCreateCommand;
+use Illuminate\Routing\Controllers\HasMiddleware;
+
 
 class WorkController extends Controller implements HasMiddleware
 {
@@ -21,15 +23,19 @@ class WorkController extends Controller implements HasMiddleware
         ];
     }
     //index
-    public function index()
+    public function workIndex()
     {
+        $payload = [
+            'query' => Work::query(),
+            'report_data' => []
+        ];
         return app(\Illuminate\Pipeline\Pipeline::class)
-            ->send(Work::query())
+            ->send($payload)
             ->through([
-                
-                \App\Pipelines\Job\FilterByTitle::class,
-                \App\Pipelines\Job\FilterByLocation::class,
-                \App\Pipelines\Job\FilterByCategory::class,
+
+                // \App\Pipelines\Job\FilterByTitle::class,
+                // \App\Pipelines\Job\FilterByLocation::class,
+                // \App\Pipelines\Job\FilterByCategory::class,
                 \App\Pipelines\Job\GenerateJobReport::class,
             ])
             ->then(function ($payload) {
@@ -60,17 +66,21 @@ class WorkController extends Controller implements HasMiddleware
     //create
     public function work_store(Request $request)
     {
-        $request->validate([
-            'title' => 'required',
-            'description' => 'required',
-            'category_id' => 'required|exists:categories,id',
-            'location' => 'required'
-        ]);
-
+        $command = new WorkCreateCommand(
+            employer_id: $request->employer_id,
+            title: $request->title,
+            description: $request->description,
+            category_id: $request->category_id,
+            location: $request->location,
+            expiry_date: $request->expiry_date,
+        );
         return app(Pipeline::class)
-            ->send($request)
+            ->send($command)
 
-            ->through([\App\Pipelines\Job\StoreJob::class])
+            ->through([
+                \App\Pipelines\Job\ValidateWork::class,
+                \App\Pipelines\Job\StoreJob::class
+            ])
             ->then(fn($job) => response()->json($job, 201));
     }
 

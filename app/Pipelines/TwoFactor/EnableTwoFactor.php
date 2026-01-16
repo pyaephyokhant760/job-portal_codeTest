@@ -15,7 +15,6 @@ class EnableTwoFactor {
             'two_factor_enabled' => true,
         ]);
 
-        
         $qrCodeUrl = $google2fa->getQRCodeUrl(
             config('app.name'),
             $user->email,

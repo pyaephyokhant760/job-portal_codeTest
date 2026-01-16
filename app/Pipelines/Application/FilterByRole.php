@@ -10,7 +10,6 @@ class FilterByRole
     {
         $user = request()->user();
 
-        
         if (!$user->hasRole('admin')) {
             $query->whereHas('work', function ($q) use ($user) {
                 $q->where('employer_id', $user->id);
